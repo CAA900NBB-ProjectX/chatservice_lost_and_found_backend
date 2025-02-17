@@ -10,7 +10,6 @@ import com.foundit.chat_api.notification.NotificationService;
 import com.foundit.chat_api.notification.NotificationType;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -62,10 +61,10 @@ public class MessageService {
     }
 
     @Transactional
-    public void setMessagesToSeen(String chatId, Authentication authentication) {
+    public void setMessagesToSeen(String chatId, String token) {
         Chat chat = chatRepository.findById(chatId)
                 .orElseThrow(() -> new RuntimeException("Chat not found"));
-        final String recipientId = getRecipientId(chat, authentication);
+        final String recipientId = getRecipientId(chat, token);
 
         messageRepository.setMessagesToSeenByChatId(chatId, MessageState.SEEN);
 
@@ -73,18 +72,18 @@ public class MessageService {
                 .chatId(chat.getId())
                 .type(NotificationType.SEEN)
                 .receiverId(recipientId)
-                .senderId(getSenderId(chat, authentication))
+                .senderId(getSenderId(chat, token))
                 .build();
 
         notificationService.sendNotification(recipientId, notification);
     }
 
-    public void uploadMediaMessage(String chatId, MultipartFile file, Authentication authentication) {
+    public void uploadMediaMessage(String chatId, MultipartFile file, String token) {
         Chat chat = chatRepository.findById(chatId)
                 .orElseThrow(() -> new RuntimeException("Chat not found"));
 
-        final String senderId = getSenderId(chat, authentication);
-        final String receiverId = getRecipientId(chat, authentication);
+        final String senderId = getSenderId(chat, token);
+        final String receiverId = getRecipientId(chat, token);
 
         final String filePath = fileService.saveFile(file, senderId);
         Message message = new Message();
@@ -108,15 +107,15 @@ public class MessageService {
         notificationService.sendNotification(receiverId, notification);
     }
 
-    private String getSenderId(Chat chat, Authentication authentication) {
-        if (chat.getSender().getId().equals(authentication.getName())) {
+    private String getSenderId(Chat chat, String token) {
+        if (chat.getSender().getId().equals(token)) {
             return chat.getSender().getId();
         }
         return chat.getRecipient().getId();
     }
 
-    private String getRecipientId(Chat chat, Authentication authentication) {
-        if (chat.getSender().getId().equals(authentication.getName())) {
+    private String getRecipientId(Chat chat, String token) {
+        if (chat.getSender().getId().equals(token)) {
             return chat.getRecipient().getId();
         }
         return chat.getSender().getId();

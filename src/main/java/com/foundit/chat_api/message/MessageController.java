@@ -5,7 +5,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -40,15 +39,15 @@ public class MessageController {
             @RequestParam("chat-id") String chatId,
             @Parameter
             @RequestPart("file") MultipartFile file,
-            Authentication authentication
+            String token
     ) {
-        messageService.uploadMediaMessage(chatId, file, authentication);
+        messageService.uploadMediaMessage(chatId, file, token);
     }
 
     @PatchMapping
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public void setMessageToSeen(@RequestParam("chat-id") String chatId, Authentication authentication) {
-        messageService.setMessagesToSeen(chatId, authentication);
+    public void setMessageToSeen(@RequestParam("chat-id") String chatId, String token) {
+        messageService.setMessagesToSeen(chatId, token);
     }
 
     @GetMapping("/chat/{chat-id}")

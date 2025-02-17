@@ -11,19 +11,6 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 @SpringBootApplication
 @EnableJpaAuditing
-@SecurityScheme(
-		name = "keycloak",
-		type = SecuritySchemeType.OAUTH2,
-		bearerFormat = "JWT",
-		scheme = "bearer",
-		in = SecuritySchemeIn.HEADER,
-		flows = @OAuthFlows(
-				password = @OAuthFlow(
-						authorizationUrl = "http://localhost:9090/realms/whatsapp-clone/protocol/openid-connect/auth",
-						tokenUrl = "http://localhost:9090/realms/whatsapp-clone/protocol/openid-connect/token"
-				)
-		)
-)
 public class ChatApiApplication {
 
 	public static void main(String[] args) {
