@@ -19,6 +19,6 @@ public class ChatResponse {
     private int itemid;
     private String lastMessage;
     private LocalDateTime lastMessageTime;
-    private String senderId;
-    private String receiverId;
+    private int senderId;
+    private int receiverId;
 }
