@@ -1,8 +1,9 @@
 package com.foundit.chat_api.chat;
 
 
+import com.foundit.chat_api.common.TokenResolver;
+import com.foundit.chat_api.common.UserRestTemplate;
 import com.foundit.chat_api.user.User;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,34 +16,35 @@ import java.util.Optional;
 public class ChatService {
 
     private final ChatRepository chatRepository;
-//    private final UserRepository userRepository;
+    private final UserRestTemplate userRestTemplate;
+    private final TokenResolver tokenResolver;
     private final ChatMapper mapper;
 
     @Transactional(readOnly = true)
-    public List<ChatResponse> getChatsByReceiverId(String token) {
-//        final String userId = token.getName();
-        final String userId = token;
-        return chatRepository.findChatsBySenderId(userId)
+    public List<ChatResponse> getChatsByLoginUserForItem(String token, String ItemPostedUserId, int itemId) {
+        final String userId = tokenResolver.extractExtraUserId(token);
+        User sender = userRestTemplate.getUser(Long.parseLong(userId));
+        User reciever = userRestTemplate.getUserByUserId(ItemPostedUserId);
+        return chatRepository.getChatsByLoginUserForItem(sender.getId().toString(), reciever.getId().toString(), itemId)
                 .stream()
-                .map(c -> mapper.toChatResponse(c, userId))
+                .map(c -> mapper.toChatResponse(c, userId, itemId))
                 .toList();
     }
 
-    public String createChat(String senderId, String receiverId) {
-
-        Optional<Chat> existingChat = chatRepository.findChatByReceiverAndSender(senderId, receiverId);
+    public String createChat(String token, String receiverId, int itemId) {
+        final String userId = tokenResolver.extractExtraUserId(token);
+        Optional<Chat> existingChat = chatRepository.getChatsByLoginUserForItem(userId, receiverId, itemId);
         if (existingChat.isPresent()) {
             return existingChat.get().getId();
         }
 
-//        User sender = userRepository.findByPublicId(senderId)
-//                .orElseThrow(() ->  new EntityNotFoundException("User with id " + senderId + " not found"));
-//        User receiver = userRepository.findByPublicId(receiverId)
-//                .orElseThrow(() ->  new EntityNotFoundException("User with id " + receiverId + " not found"));
+        User sender = userRestTemplate.getUser(Long.parseLong(userId));
+        User receiver = userRestTemplate.getUser(Long.parseLong(receiverId));
 
         Chat chat = new Chat();
-//        chat.setSender(sender);
-//        chat.setRecipient(receiver);
+        chat.setSender(sender);
+        chat.setRecipient(receiver);
+        chat.setItemId(itemId);
 
         Chat savedChat = chatRepository.save(chat);
         return savedChat.getId();
