@@ -8,10 +8,8 @@ public class ChatMapper {
         return ChatResponse.builder()
                 .id(chat.getId())
                 .itemid(itemid)
-                .lastMessage(chat.getLastMessage())
-                .lastMessageTime(chat.getLastMessageTime())
-                .senderId(chat.getSender().getId().toString())
-                .receiverId(chat.getRecipient().getId().toString())
+                .senderId(chat.getSender())
+                .receiverId(chat.getRecipient())
                 .build();
     }
 }

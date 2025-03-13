@@ -1,11 +1,16 @@
 package com.foundit.chat_api.common;
 
 
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.security.Key;
@@ -13,7 +18,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.function.Function;
 
-@Service
+@Component
+@NoArgsConstructor
 public class TokenResolver {
 
     @Value("${security.jwt.secret-key}")

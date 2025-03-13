@@ -25,7 +25,7 @@ public class ChatService {
         final String userId = tokenResolver.extractExtraUserId(token);
         User sender = userRestTemplate.getUser(Long.parseLong(userId));
         User reciever = userRestTemplate.getUserByUserId(ItemPostedUserId);
-        return chatRepository.getChatsByLoginUserForItem(sender.getId().toString(), reciever.getId().toString(), itemId)
+        return chatRepository.getChatsByLoginUserForItem(sender.getId(), reciever.getId(), itemId)
                 .stream()
                 .map(c -> mapper.toChatResponse(c, userId, itemId))
                 .toList();
@@ -33,17 +33,15 @@ public class ChatService {
 
     public String createChat(String token, String receiverId, int itemId) {
         final String userId = tokenResolver.extractExtraUserId(token);
-        Optional<Chat> existingChat = chatRepository.getChatsByLoginUserForItem(userId, receiverId, itemId);
+        Optional<Chat> existingChat = chatRepository.getChatsByLoginUserForItem(Integer.parseInt(userId), Integer.parseInt(receiverId), itemId);
         if (existingChat.isPresent()) {
             return existingChat.get().getId();
         }
 
-        User sender = userRestTemplate.getUser(Long.parseLong(userId));
-        User receiver = userRestTemplate.getUser(Long.parseLong(receiverId));
 
         Chat chat = new Chat();
-        chat.setSender(sender);
-        chat.setRecipient(receiver);
+        chat.setSender(Integer.parseInt(userId));
+        chat.setRecipient(Integer.parseInt(receiverId));
         chat.setItemId(itemId);
 
         Chat savedChat = chatRepository.save(chat);
