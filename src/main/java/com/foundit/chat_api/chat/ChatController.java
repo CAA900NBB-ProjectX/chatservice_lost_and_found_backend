@@ -34,7 +34,7 @@ public class ChatController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ChatResponse>> getChatsByLoginUserForItem(String token, String ItemPostedUser, @RequestParam int itemId) {
+    public ResponseEntity<List<ChatResponse>> getChatsByLoginUserForItem(String token, @RequestParam String ItemPostedUser, @RequestParam int itemId) {
         return ResponseEntity.ok(chatService.getChatsByLoginUserForItem(token, ItemPostedUser, itemId));
     }
 }
