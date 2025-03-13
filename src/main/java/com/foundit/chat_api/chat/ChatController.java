@@ -13,14 +13,14 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/chats")
+@RequestMapping("/api/chats")
 @RequiredArgsConstructor
 @Tag(name = "Chat")
 public class ChatController {
 
     private final ChatService chatService;
 
-    @PostMapping
+    @PostMapping("/create")
     public ResponseEntity<StringResponse> createChat(
             String token,
             @RequestParam(name = "receiver-id") String receiverId,
@@ -33,7 +33,7 @@ public class ChatController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping
+    @GetMapping("/get")
     public ResponseEntity<List<ChatResponse>> getChatsByLoginUserForItem(String token, @RequestParam String ItemPostedUser, @RequestParam int itemId) {
         return ResponseEntity.ok(chatService.getChatsByLoginUserForItem(token, ItemPostedUser, itemId));
     }
