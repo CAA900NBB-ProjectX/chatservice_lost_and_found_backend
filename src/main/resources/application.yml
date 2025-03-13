@@ -1,4 +1,6 @@
 spring:
+  application:
+    name: CHAT-SERVICE
   datasource:
     url: ${SPRING_DATASOURCE_URL}
     username: ${SPRING_DATASOURCE_USERNAME}
@@ -23,8 +25,17 @@ spring:
 springdoc:
   default-produces-media-type: application/json
 
+server:
+  port: 8083
 
 application:
   file:
     uploads:
       media-output-path: ./uploads
+
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_SERVICE_CONTAINER}
+  instance:
+    preferIpAddress: true
