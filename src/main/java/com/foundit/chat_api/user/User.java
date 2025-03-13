@@ -21,24 +21,12 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class User extends BaseAuditingEntity {
+public class User {
 
-    private static final int LAST_ACTIVATE_INTERVAL = 5;
-
-    private Long id;
+    private int id;
     private String username;
     private String email;
     private LocalDateTime lastSeen;
-
-    @OneToMany(mappedBy = "sender")
     private List<Chat> chatsAsSender;
-
-    @OneToMany(mappedBy = "recipient")
     private List<Chat> chatsAsRecipient;
-
-    @Transient
-    public boolean isUserOnline() {
-        return lastSeen != null && lastSeen.isAfter(LocalDateTime.now().minusMinutes(LAST_ACTIVATE_INTERVAL));
-    }
-
 }
