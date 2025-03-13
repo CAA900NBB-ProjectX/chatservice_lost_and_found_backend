@@ -22,10 +22,11 @@ public class ChatController {
 
     @PostMapping
     public ResponseEntity<StringResponse> createChat(
-            @RequestParam(name = "sender-id") String senderId,
-            @RequestParam(name = "receiver-id") String receiverId
+            String token,
+            @RequestParam(name = "receiver-id") String receiverId,
+            @RequestParam(name = "item-id") int itemId
     ) {
-        final String chatId = chatService.createChat(senderId, receiverId);
+        final String chatId = chatService.createChat(token, receiverId, itemId);
         StringResponse response = StringResponse.builder()
                 .response(chatId)
                 .build();
@@ -33,7 +34,7 @@ public class ChatController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ChatResponse>> getChatsByReceiver(String token) {
-        return ResponseEntity.ok(chatService.getChatsByReceiverId(token));
+    public ResponseEntity<List<ChatResponse>> getChatsByLoginUserForItem(String token, String ItemPostedUser, @RequestParam int itemId) {
+        return ResponseEntity.ok(chatService.getChatsByLoginUserForItem(token, ItemPostedUser, itemId));
     }
 }
