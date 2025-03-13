@@ -13,5 +13,5 @@ public interface ChatRepository extends JpaRepository<Chat, String> {
     List<Chat> findChatsBySenderId(@Param("senderId") String senderId, @Param("itemId") int itemId);
 
     @Query(name = ChatConstants.FIND_CHAT_BY_LOGIN_USER_ITEM_ID)
-    Optional<Chat> getChatsByLoginUserForItem(@Param("senderId") String id, @Param("recipientId") String recipientId, @Param("itemId") int itemId);
+    Optional<Chat> getChatsByLoginUserForItem(@Param("senderId") int id, @Param("recipientId") int recipientId, @Param("itemId") int itemId);
 }
