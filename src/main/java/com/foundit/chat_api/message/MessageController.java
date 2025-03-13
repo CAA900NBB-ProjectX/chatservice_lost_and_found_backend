@@ -33,22 +33,22 @@ public class MessageController {
         messageService.saveMessage(message);
     }
 
-    @PostMapping(value = "/upload-media", consumes = "multipart/form-data")
-    @ResponseStatus(HttpStatus.CREATED)
-    public void uploadMedia(
-            @RequestParam("chat-id") String chatId,
-            @Parameter
-            @RequestPart("file") MultipartFile file,
-            String token
-    ) {
-        messageService.uploadMediaMessage(chatId, file, token);
-    }
-
-    @PatchMapping
-    @ResponseStatus(HttpStatus.ACCEPTED)
-    public void setMessageToSeen(@RequestParam("chat-id") String chatId, String token) {
-        messageService.setMessagesToSeen(chatId, token);
-    }
+//    @PostMapping(value = "/upload-media", consumes = "multipart/form-data")
+//    @ResponseStatus(HttpStatus.CREATED)
+//    public void uploadMedia(
+//            @RequestParam("chat-id") String chatId,
+//            @Parameter
+//            @RequestPart("file") MultipartFile file,
+//            String token
+//    ) {
+//        messageService.uploadMediaMessage(chatId, file, token);
+//    }
+//
+//    @PatchMapping
+//    @ResponseStatus(HttpStatus.ACCEPTED)
+//    public void setMessageToSeen(@RequestParam("chat-id") String chatId, String token) {
+//        messageService.setMessagesToSeen(chatId, token);
+//    }
 
     @GetMapping("/chat/{chat-id}")
     public ResponseEntity<List<MessageResponse>> getAllMessages(
