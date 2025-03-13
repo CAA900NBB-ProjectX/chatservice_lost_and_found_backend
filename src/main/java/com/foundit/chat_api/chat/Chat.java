@@ -35,66 +35,20 @@ import static jakarta.persistence.GenerationType.UUID;
 @Entity
 @Table(name = "chat")
 @NamedQuery(name = ChatConstants.FIND_CHAT_BY_SENDER_ID,
-            query = "SELECT DISTINCT c FROM Chat c WHERE c.sender.id = :senderId OR c.recipient.id = :senderId ORDER BY createdDate DESC"
+            query = "SELECT DISTINCT c FROM Chat c WHERE c.sender = :senderId OR c.recipient = :senderId ORDER BY createdDate DESC"
 )
 @NamedQuery(name = ChatConstants.FIND_CHAT_BY_LOGIN_USER_ITEM_ID,
-            query = "SELECT DISTINCT c FROM Chat c WHERE (c.sender.id = :senderId AND c.recipient.id = :recipientId) OR (c.sender.id = :recipientId AND c.recipient.id = :senderId) ORDER BY createdDate DESC"
+            query = "SELECT DISTINCT c FROM Chat c WHERE (c.sender = :senderId AND c.recipient = :recipientId) OR (c.sender = :recipientId AND c.recipient = :senderId) ORDER BY createdDate DESC"
 )
 public class Chat extends BaseAuditingEntity {
     @Id
-    @GeneratedValue(strategy = UUID)
+    @GeneratedValue(generator = "UUID")
     private String id;
     private int itemId;
-    @ManyToOne
-    @JoinColumn(name = "sender_id")
-    private User sender;
-    @ManyToOne
-    @JoinColumn(name = "recipient_id")
-    private User recipient;
+    private Integer sender;
+    private Integer recipient;
     @OneToMany(mappedBy = "chat", fetch = FetchType.EAGER)
     @OrderBy("createdDate DESC")
     private List<Message> messages;
 
-//    @Transient
-//    public String getChatName(String senderId) {
-//        if (recipient.getId().equals(senderId)) {
-//            return sender.getFirstName() + " " + sender.getLastName();
-//        }
-//        return recipient.getFirstName() + " " + recipient.getLastName();
-//    }
-//    @Transient
-//    public String getTargetChatName(String senderId) {
-//        if (sender.getId().equals(senderId)) {
-//            return sender.getFirstName() + " " + sender.getLastName();
-//        }
-//        return recipient.getFirstName() + " " + recipient.getLastName();
-//    }
-
-    @Transient
-    public long getUnreadMessages(String senderId) {
-        return this.messages
-                .stream()
-                .filter(m -> m.getReceiverId().equals(senderId))
-                .filter(m -> MessageState.SENT == m.getState())
-                .count();
-    }
-
-    @Transient
-    public String getLastMessage() {
-        if (messages != null && !messages.isEmpty()) {
-            if (messages.get(0).getType() != MessageType.TEXT) {
-                return "Attachment";
-            }
-            return messages.get(0).getContent();
-        }
-        return null;
-    }
-
-    @Transient
-    public LocalDateTime getLastMessageTime() {
-        if (messages != null && !messages.isEmpty()) {
-            return messages.get(0).getCreatedDate();
-        }
-        return null;
-    }
 }
