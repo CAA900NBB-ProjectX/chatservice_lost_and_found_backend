@@ -1,0 +1,25 @@
+services:
+  loginservice:
+    build :
+      context: .
+      dockerfile: Dockerfile    
+    env_file:
+      - .env
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgresdb:5432/chatdb
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - 8081:8081
+    depends_on:
+      - postgres
+    networks:
+      - foundit-network
+    
+networks:
+  foundit-network:
+    driver: bridge
+
+volumes:
+  postgres:
+    driver: local
