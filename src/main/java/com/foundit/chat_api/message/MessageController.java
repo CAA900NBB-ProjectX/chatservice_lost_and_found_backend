@@ -20,7 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/messages")
+@RequestMapping("/messages")
 @RequiredArgsConstructor
 @Tag(name = "Message")
 public class MessageController {
@@ -30,6 +30,7 @@ public class MessageController {
     @PostMapping("/save")
     @ResponseStatus(HttpStatus.CREATED)
     public void saveMessage(@RequestBody MessageRequest message) {
+
         messageService.saveMessage(message);
     }
 
