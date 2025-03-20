@@ -1,6 +1,7 @@
 package com.foundit.chat_api.common;
 
 
+import com.foundit.chat_api.user.User;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 import java.security.Key;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 
 @Component
@@ -32,9 +34,12 @@ public class TokenResolver {
         return extractClaim(token, Claims::getSubject);
     }
 
-    public String extractExtraUserId(String token) {
-        List id= extractAllClaims(token).get("user", List.class);
-        return id.getFirst().toString();
+    public int extractExtraUserId(String token) {
+        Claims claims= extractAllClaims(token);
+        var user = claims.get("user");
+        var userMap = (Map<String, Object>) user;
+        int userId = (int) userMap.get("id");
+        return userId;
     }
 
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
