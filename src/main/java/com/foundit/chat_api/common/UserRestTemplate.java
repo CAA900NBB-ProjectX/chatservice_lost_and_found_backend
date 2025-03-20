@@ -12,18 +12,18 @@ public class UserRestTemplate {
         this.restTemplate = restTemplate;
     }
 
-    public User getUser(Long userId) {
-        String url = "https://localhost:8081/user/getuserbyid?userId="+userId;
+    public User getUser(int userId) {
+        String url = "http://localhost:8081/user/getuserbyid?userId="+userId;
         return restTemplate.getForObject(url, User.class);
     }
 
     public User getUserByEmail(String email) {
-        String url = "https://localhost:8081/user/getuserbyemail?email="+email;
+        String url = "http://localhost:8081/user/getuserbyemail?email="+email;
         return restTemplate.getForObject(url,User.class);
     }
 
     public User getUserByUserId(String userId) {
-        String url = "https://localhost:8081/user/getuserbyuserid?email="+userId;
+        String url = "http://localhost:8081/user/getuserbyuserid?userId="+userId;
         return restTemplate.getForObject(url,User.class);
     }
 }
