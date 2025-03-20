@@ -4,16 +4,12 @@ import com.foundit.chat_api.common.StringResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/chats")
+@RequestMapping("/chats")
 @RequiredArgsConstructor
 @Tag(name = "Chat")
 public class ChatController {
@@ -22,11 +18,9 @@ public class ChatController {
 
     @PostMapping("/create")
     public ResponseEntity<StringResponse> createChat(
-            String token,
-            @RequestParam(name = "receiver-id") String receiverId,
-            @RequestParam(name = "item-id") int itemId
+            @RequestBody ChatDto chatDto
     ) {
-        final String chatId = chatService.createChat(token, receiverId, itemId);
+        final String chatId = chatService.createChat(chatDto.getToken(), chatDto.getReceiverId(), chatDto.getItemId());
         StringResponse response = StringResponse.builder()
                 .response(chatId)
                 .build();
@@ -34,7 +28,23 @@ public class ChatController {
     }
 
     @GetMapping("/get")
-    public ResponseEntity<List<ChatResponse>> getChatsByLoginUserForItem(String token, @RequestParam String ItemPostedUser, @RequestParam int itemId) {
-        return ResponseEntity.ok(chatService.getChatsByLoginUserForItem(token, ItemPostedUser, itemId));
+    public ResponseEntity<?> getChatsByLoginUserForItem(@RequestParam String token, @RequestParam String ItemPostedUser, @RequestParam int itemId) {
+            List<ChatResponse>  chat = chatService.getChatsByLoginUserForItem(token, ItemPostedUser, itemId);
+            if (chat.isEmpty()) {
+                return ResponseEntity.ok(0);
+            } else {
+                return ResponseEntity.ok(chat);
+            }
     }
+
+    @GetMapping("/getchatlist")
+    public ResponseEntity<?> getChatsForItem(@RequestParam String token, @RequestParam String ItemPostedUser, @RequestParam int itemId) {
+        List<ChatResponse>  chat = chatService.getChatsListForReportedUserForItem(token, ItemPostedUser, itemId);
+        if (chat.isEmpty()) {
+            return ResponseEntity.ok(0);
+        } else {
+            return ResponseEntity.ok(chat);
+        }
+    }
+
 }
