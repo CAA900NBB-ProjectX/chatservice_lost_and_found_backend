@@ -20,6 +20,7 @@ public class ChatService {
     private final UserRestTemplate userRestTemplate;
     private final TokenResolver tokenResolver;
     private final ChatMapper mapper;
+    private final ChatListMapper listmapper;
 
     @Transactional(readOnly = true)
     public List<ChatResponse> getChatsByLoginUserForItem(String token, String ItemPostedUserId, int itemId) {
@@ -34,14 +35,14 @@ public class ChatService {
 
     }
 
-    public List<ChatResponse> getChatsListForReportedUserForItem(String token, String ItemPostedUserId, int itemId) {
+    public List<ChatListReponse> getChatsListForReportedUserForItem(String token, String ItemPostedUserId, int itemId) {
         final int userId = tokenResolver.extractExtraUserId(token);
         User reciever = userRestTemplate.getUserByUserId(ItemPostedUserId);
-        List<ChatResponse> chat = null;
+        List<ChatListReponse> chat = null;
         if (userId == reciever.getId()) {
             chat = chatRepository.getChatsListLoginUserForItem(reciever.getId(), itemId)
                     .stream()
-                    .map(c -> mapper.toChatResponse(c, reciever.getId(), itemId))
+                    .map(c -> listmapper.toChatListResponse(c, reciever.getId(), itemId, reciever.getUsername()))
                     .collect(Collectors.toList());
         }
         return chat;

@@ -1,10 +1,6 @@
 package com.foundit.chat_api.chat;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
@@ -13,8 +9,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class ChatResponse {
-
+public class ChatListReponse {
     private String id;
     private int itemid;
     private String lastMessage;
