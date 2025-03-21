@@ -39,7 +39,7 @@ public class ChatController {
 
     @GetMapping("/getchatlist")
     public ResponseEntity<?> getChatsForItem(@RequestParam String token, @RequestParam String ItemPostedUser, @RequestParam int itemId) {
-        List<ChatResponse>  chat = chatService.getChatsListForReportedUserForItem(token, ItemPostedUser, itemId);
+        List<ChatListReponse>  chat = chatService.getChatsListForReportedUserForItem(token, ItemPostedUser, itemId);
         if (chat.isEmpty()) {
             return ResponseEntity.ok(0);
         } else {
