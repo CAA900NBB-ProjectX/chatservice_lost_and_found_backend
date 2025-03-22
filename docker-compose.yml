@@ -1,5 +1,6 @@
 services:
   chatservice:
+    container_name: chatservice
     build :
       context: .
       dockerfile: Dockerfile    
