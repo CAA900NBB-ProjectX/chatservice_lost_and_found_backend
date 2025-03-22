@@ -28,7 +28,7 @@ FROM openjdk:23-ea-slim
 WORKDIR /app
 
 # Copy the built JAR file from the build stage
-COPY --from=build /app/build/libs/*.jar chat-service.jar
+COPY --from=build /app/build/libs/item-service.jar chat-service.jar
 
 # Expose the application port
 EXPOSE 8083
