@@ -5,6 +5,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,11 +29,14 @@ public class MessageController {
 
     private final MessageService messageService;
 
-    @PostMapping("/save")
-    @ResponseStatus(HttpStatus.CREATED)
-    public void saveMessage(@RequestBody MessageRequest message) {
+//    @PostMapping("/save")
+//    @ResponseStatus(HttpStatus.CREATED)
+    @MessageMapping("/messages")
+    @SendTo("/topic/messages")
+    public MessageResponse saveMessage(MessageRequest message) {
 
-        messageService.saveMessage(message);
+        MessageResponse response = messageService.saveMessage(message);
+        return response;
     }
 
 //    @PostMapping(value = "/upload-media", consumes = "multipart/form-data")
@@ -58,4 +63,13 @@ public class MessageController {
 
         return ResponseEntity.ok(messageService.findChatMessages(chatId));
     }
+
+
+
+//    @MessageMapping("/chat")
+//    @SendTo("/topic/messages")
+//    public String sendMessage(testChat message) {
+//        System.out.println("📩 Received message: " + message.getMessage());
+//        return "Server Response: " + message.getMessage();
+//    }
 }
