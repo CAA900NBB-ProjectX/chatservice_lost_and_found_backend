@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -26,7 +27,7 @@ public class MessageService {
     private final NotificationService notificationService;
     private final FileService fileService;
 
-    public void saveMessage(MessageRequest messageRequest) {
+    public MessageResponse saveMessage(MessageRequest messageRequest) {
         Chat chat = chatRepository.findById(messageRequest.getChatId())
                 .orElseThrow(() -> new EntityNotFoundException("Chat not found"));
 
@@ -38,8 +39,12 @@ public class MessageService {
         message.setType(messageRequest.getType());
         message.setState(MessageState.SENT);
 
-        messageRepository.save(message);
+        message = messageRepository.save(message);
 
+        System.out.println(message.getCreatedDate());
+
+        MessageResponse response = mapper.toMessageResponse(message);
+        response.setCreatedAt(null);
         Notification notification = Notification.builder()
                 .chatId(chat.getId())
                 .messageType(messageRequest.getType())
@@ -50,6 +55,7 @@ public class MessageService {
                 .build();
 
         notificationService.sendNotification(messageRequest.getReceiverId(), notification);
+        return response;
     }
 
     public List<MessageResponse> findChatMessages(String chatId) {

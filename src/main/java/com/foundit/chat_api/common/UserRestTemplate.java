@@ -13,17 +13,17 @@ public class UserRestTemplate {
     }
 
     public User getUser(int userId) {
-        String url = "http://loginservice:8081/user/getuserbyid?userId="+userId;
+        String url = "http://localhost:8081/user/getuserbyid?userId="+userId;
         return restTemplate.getForObject(url, User.class);
     }
 
     public User getUserByEmail(String email) {
-        String url = "http://loginservice:8081/user/getuserbyemail?email="+email;
+        String url = "http://localhost:8081/user/getuserbyemail?email="+email;
         return restTemplate.getForObject(url,User.class);
     }
 
     public User getUserByUserId(String userId) {
-        String url = "http://loginservice:8081/user/getuserbyuserid?userId="+userId;
+        String url = "http://localhost:8081/user/getuserbyuserid?userId="+userId;
         return restTemplate.getForObject(url,User.class);
     }
 }
